@@ -6,6 +6,7 @@ import {
   Vector2,
   MathUtils,
   Color,
+  sRGBEncoding,
 } from 'https://unpkg.com/three@0.162.0/build/three.module.js';
 
 const container = document.getElementById('canvas-container');
@@ -16,24 +17,43 @@ const camera = new PerspectiveCamera(55, window.innerWidth / window.innerHeight,
 camera.position.set(0, 0, 0.1);
 
 const renderer = new WebGLRenderer({ antialias: true, alpha: true });
-renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.outputEncoding = sRGBEncoding;
 renderer.setClearColor(0x0b1120, 1);
 container.appendChild(renderer.domElement);
 
-const cubemapFiles = ['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg'];
 const loader = new CubeTextureLoader();
 loader.setPath('assets/');
-loader.load(
-  cubemapFiles,
-  (texture) => {
-    scene.background = texture;
-  },
-  undefined,
-  () => {
-    console.warn('Die Skybox-Bilder konnten nicht geladen werden. Bitte lege px.jpg, nx.jpg, py.jpg, ny.jpg, pz.jpg und nz.jpg in assets/ ab.');
-  }
-);
+
+const panoramas = [
+  'panorama_0.png',
+  'panorama_1.png',
+  'panorama_2.png',
+  'panorama_3.png',
+  'panorama_4.png',
+  'panorama_5.png',
+];
+
+const pxSet = ['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg'];
+
+function loadCubemap(files, fallback) {
+  loader.load(
+    files,
+    (texture) => {
+      scene.background = texture;
+      console.log('Skybox geladen:', files);
+    },
+    undefined,
+    (err) => {
+      console.warn('Skybox konnte nicht geladen werden:', files, err);
+      if (fallback) loadCubemap(fallback, null);
+      else scene.background = new Color(0x0b1120);
+    }
+  );
+}
+
+loadCubemap(panoramas, pxSet);
 
 const mouse = new Vector2(0, 0);
 const targetMouse = new Vector2(0, 0);
