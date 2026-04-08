@@ -41,31 +41,10 @@ function createScene() {
   return { scene, camera, renderer };
 }
 
-function rotateImage180(image) {
-  const canvas = document.createElement('canvas');
-  canvas.width = image.naturalWidth || image.width;
-  canvas.height = image.naturalHeight || image.height;
-
-  const context = canvas.getContext('2d');
-  context.translate(canvas.width, canvas.height);
-  context.rotate(Math.PI);
-  context.drawImage(image, 0, 0);
-
-  return canvas;
-}
-
 function applyCubeBackground(scene, images) {
   // Minecraft panorama_0..5 is not in Three.js CubeTexture axis order.
   // Three expects: +X, -X, +Y, -Y, +Z, -Z.
-  // The four side faces need a 180deg rotation to remove vertical seam artifacts.
-  const cubeFaceOrder = [
-    rotateImage180(images[1]),
-    rotateImage180(images[3]),
-    images[4],
-    images[5],
-    rotateImage180(images[2]),
-    rotateImage180(images[0]),
-  ];
+  const cubeFaceOrder = [images[1], images[3], images[4], images[5], images[2], images[0]];
   const cubeTexture = new THREE.CubeTexture(cubeFaceOrder);
   cubeTexture.generateMipmaps = false;
   cubeTexture.minFilter = THREE.LinearFilter;
