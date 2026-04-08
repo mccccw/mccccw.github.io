@@ -66,6 +66,7 @@
       href="https://fontlibrary.org/face/minecraftia"
       type="text/css"
     />
+    <link rel="stylesheet" href="panorama.css" />
     <style>
       :root {
         color-scheme: dark;
@@ -78,9 +79,7 @@
         min-height: 100vh;
         display: grid;
         place-items: center;
-        background:
-          linear-gradient(rgba(5, 9, 16, 0.58), rgba(5, 9, 16, 0.72)),
-          url("assets/panorama_0.png") center / cover no-repeat fixed;
+        background: #02050a;
         font-family: "Segoe UI", Tahoma, sans-serif;
         color: #f5f8ff;
       }
@@ -167,7 +166,30 @@
     </style>
   </head>
   <body>
-    <div class="join-layout">
+    <div id="canvas-container" aria-hidden="true"></div>
+    <div id="panorama-fallback" class="panorama-fallback" aria-hidden="true">
+      <div class="fallback-strip">
+        <div class="fallback-tile p0"></div>
+        <div class="fallback-tile p1"></div>
+        <div class="fallback-tile p2"></div>
+        <div class="fallback-tile p3"></div>
+        <div class="fallback-tile p0"></div>
+        <div class="fallback-tile p1"></div>
+        <div class="fallback-tile p2"></div>
+        <div class="fallback-tile p3"></div>
+      </div>
+    </div>
+    <div class="panorama-preload" aria-hidden="true">
+      <img id="pano-0" src="assets/panorama_0.png" alt="" />
+      <img id="pano-1" src="assets/panorama_1.png" alt="" />
+      <img id="pano-2" src="assets/panorama_2.png" alt="" />
+      <img id="pano-3" src="assets/panorama_3.png" alt="" />
+      <img id="pano-4" src="assets/panorama_4.png" alt="" />
+      <img id="pano-5" src="assets/panorama_5.png" alt="" />
+    </div>
+    <div class="panorama-overlay" aria-hidden="true"></div>
+
+    <div class="join-layout page-content-layer">
       <main class="panel">
         <h1>Join MCCW</h1>
         <p>
@@ -188,5 +210,7 @@
       <a class="minecraft-btn back-outside" href="index.html">Back</a>
     </div>
     <div class="site-credit">Made with ❤️ by meowtroid24</div>
+    <script src="vendor/three.min.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>

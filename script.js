@@ -5,6 +5,8 @@ const panoImages = [0, 1, 2, 3, 4, 5].map((index) =>
   document.getElementById(`pano-${index}`)
 );
 
+const hasRequiredPanoramaMarkup = Boolean(container) && panoImages.every(Boolean);
+
 function activateFallback(reason) {
   body.classList.add('panorama-fallback-active');
   if (reason) console.info('Panorama fallback aktiv:', reason);
@@ -40,7 +42,10 @@ function createScene() {
 }
 
 function applyCubeBackground(scene, images) {
-  const cubeTexture = new THREE.CubeTexture(images);
+  // Minecraft panorama_0..5 is not in Three.js CubeTexture axis order.
+  // Three expects: +X, -X, +Y, -Y, +Z, -Z.
+  const cubeFaceOrder = [images[1], images[3], images[4], images[5], images[2], images[0]];
+  const cubeTexture = new THREE.CubeTexture(cubeFaceOrder);
   cubeTexture.needsUpdate = true;
 
   if (THREE.SRGBColorSpace) cubeTexture.colorSpace = THREE.SRGBColorSpace;
@@ -50,6 +55,10 @@ function applyCubeBackground(scene, images) {
 }
 
 function run() {
+  if (!hasRequiredPanoramaMarkup) {
+    return;
+  }
+
   if (window.location.protocol === 'file:') {
     activateFallback('file:// blockiert WebGL-Cubetexture in Firefox');
     return;

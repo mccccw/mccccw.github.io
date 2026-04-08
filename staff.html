@@ -63,6 +63,7 @@
       href="https://fontlibrary.org/face/minecraftia"
       type="text/css"
     />
+    <link rel="stylesheet" href="panorama.css" />
     <style>
       :root {
         color-scheme: dark;
@@ -169,7 +170,30 @@
     </style>
   </head>
   <body>
-    <div class="wrap">
+    <div id="canvas-container" aria-hidden="true"></div>
+    <div id="panorama-fallback" class="panorama-fallback" aria-hidden="true">
+      <div class="fallback-strip">
+        <div class="fallback-tile p0"></div>
+        <div class="fallback-tile p1"></div>
+        <div class="fallback-tile p2"></div>
+        <div class="fallback-tile p3"></div>
+        <div class="fallback-tile p0"></div>
+        <div class="fallback-tile p1"></div>
+        <div class="fallback-tile p2"></div>
+        <div class="fallback-tile p3"></div>
+      </div>
+    </div>
+    <div class="panorama-preload" aria-hidden="true">
+      <img id="pano-0" src="assets/panorama_0.png" alt="" />
+      <img id="pano-1" src="assets/panorama_1.png" alt="" />
+      <img id="pano-2" src="assets/panorama_2.png" alt="" />
+      <img id="pano-3" src="assets/panorama_3.png" alt="" />
+      <img id="pano-4" src="assets/panorama_4.png" alt="" />
+      <img id="pano-5" src="assets/panorama_5.png" alt="" />
+    </div>
+    <div class="panorama-overlay" aria-hidden="true"></div>
+
+    <div class="wrap page-content-layer">
       <div class="panel">
         <div class="grid">
           <article class="card">
@@ -222,6 +246,8 @@
     </div>
     <div class="site-credit">Made with ❤️ by meowtroid24</div>
 
+    <script src="vendor/three.min.js"></script>
+    <script src="script.js"></script>
     <script src="vendor/skinview3d.bundle.js"></script>
     <script src="staff-skin-data.js"></script>
     <script>
