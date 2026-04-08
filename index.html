@@ -3,32 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MCCW Sedin</title>
+    <title>MCCW</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="panorama-background" id="panorama">
-      <div class="overlay">
-        <div class="site-content">
-          <p class="eyebrow">MCCW Sedin</p>
-          <h1>MCCW Sedin</h1>
-          <p>Offizieller Minecraft Server mit rotierendem Panorama-Hintergrund.</p>
-          <a href="#info" class="button">Mehr erfahren</a>
+    <div id="canvas-container"></div>
+
+    <div class="overlay">
+      <div class="menu-panel">
+        <span class="eyebrow">Minecraft Server</span>
+        <h1>MCCW</h1>
+        <p>Automatisch rotierender Skybox-Hintergrund wie im Minecraft-Title-Screen.</p>
+        <div class="button-row">
+          <a href="#" class="button">Connect</a>
+          <a href="#" class="button secondary">Server Info</a>
         </div>
       </div>
     </div>
 
-    <section id="info" class="info-panel">
-      <div class="card">
-        <h2>Minecraft-Server MCCW Sedin</h2>
-        <p>
-          Die Hintergrundbilder wechseln automatisch im Vollbildmodus. Die
-          vorhandenen Panorama-Dateien im Ordner <code>assets/</code> heißen
-          <code>panorama_0.png</code> bis <code>panorama_5.png</code>.
-        </p>
-      </div>
-    </section>
-
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
   </body>
 </html>
