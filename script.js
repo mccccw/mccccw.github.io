@@ -1,9 +1,11 @@
 const panorama = document.getElementById('panorama');
 const images = [
-  'assets/panorama1.jpg',
-  'assets/panorama2.jpg',
-  'assets/panorama3.jpg',
-  'assets/panorama4.jpg',
+  'assets/panorama_0.png',
+  'assets/panorama_1.png',
+  'assets/panorama_2.png',
+  'assets/panorama_3.png',
+  'assets/panorama_4.png',
+  'assets/panorama_5.png',
 ];
 let currentIndex = 0;
 let transitionTimeout = null;
