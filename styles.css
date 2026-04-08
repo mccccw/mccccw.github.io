@@ -1,0 +1,129 @@
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  overflow-x: hidden;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #050505;
+  color: #f5f5f5;
+}
+
+body {
+  min-height: 100vh;
+}
+
+.panorama-background {
+  position: fixed;
+  inset: 0;
+  background-color: #111;
+  background-size: cover;
+  background-position: center;
+  transition: opacity 1s ease;
+  opacity: 1;
+}
+
+.panorama-background::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.85));
+}
+
+.overlay {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.site-content {
+  max-width: 720px;
+  text-align: center;
+  padding: 3rem 1.5rem;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: #9d9dff;
+  margin: 0 0 1rem;
+  font-size: 0.85rem;
+}
+
+h1 {
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  margin: 0;
+  line-height: 1;
+  letter-spacing: 0.08em;
+}
+
+.site-content p {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  margin: 1.5rem auto;
+  max-width: 34rem;
+  color: #d5d5d5;
+}
+
+.button {
+  display: inline-block;
+  padding: 0.95rem 2rem;
+  border-radius: 999px;
+  background: rgba(111, 111, 255, 0.95);
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  background: rgba(111, 111, 255, 1);
+}
+
+.info-panel {
+  position: relative;
+  z-index: 2;
+  padding: 6rem 1.5rem 4rem;
+}
+
+.card {
+  max-width: 760px;
+  margin: 0 auto;
+  background: rgba(15, 15, 15, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.2rem;
+  padding: 2rem;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+}
+
+.card h2 {
+  margin-top: 0;
+}
+
+.card code {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.2rem 0.45rem;
+  border-radius: 0.45rem;
+}
+
+@media (max-width: 600px) {
+  .site-content {
+    padding: 2rem 1rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+  }
+}
