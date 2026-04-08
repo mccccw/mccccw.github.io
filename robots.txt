@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mccw.github.io/sitemap.xml
+Sitemap: https://mccccw.github.io/sitemap.xml
