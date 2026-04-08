@@ -6,7 +6,6 @@ import {
   Vector2,
   MathUtils,
   Color,
-  sRGBEncoding,
 } from 'https://unpkg.com/three@0.162.0/build/three.module.js';
 
 const container = document.getElementById('canvas-container');
@@ -19,7 +18,9 @@ camera.position.set(0, 0, 0.1);
 const renderer = new WebGLRenderer({ antialias: true, alpha: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.outputEncoding = sRGBEncoding;
+// `sRGBEncoding` removed — some CDN builds of three.module.js don't export it.
+// If you host a local three build, you can re-enable correct encoding here.
+// renderer.outputEncoding = sRGBEncoding;
 renderer.setClearColor(0x0b1120, 1);
 container.appendChild(renderer.domElement);
 
