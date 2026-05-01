@@ -183,13 +183,14 @@ createApp({
       ],
       staff: [
         { name: 'MEOWTROID24', role: 'Owner', skin: 'meowtroid24' },
+        { name: 'REDSTONEMUMBO', role: 'Co-Owner', skin: 'Redstonemumbo' },
         { name: 'ONTEY', role: 'Dev', skin: 'derontey' },
         { name: 'ANTONSTIKO', role: 'Dev', skin: 'antonstiko' },
-        { name: 'DERVAREX', role: 'Social Media', skin: 'dervarex' },
+        { name: 'DERVAREX', role: 'Mod', skin: 'dervarex' },
         { name: 'OFFIZERWINKLER', role: 'Mod', skin: 'turbomensch' },
         { name: 'JIMBO', role: 'Mod', skin: 'Yellow_Jimbo' },
+        { name: 'IBROKP', role: 'Mod', skin: 'IbrokP' },
         { name: 'LIAM', role: 'Builder', skin: 'liamsadi11' },
-        { name: 'REDSTONEMUMBO', role: 'Builder', skin: 'Redstonemumbo' },
       ],
     };
   },
