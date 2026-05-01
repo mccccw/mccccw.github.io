@@ -186,7 +186,7 @@ createApp({
         { name: 'REDSTONEMUMBO', role: 'Co-Owner', skin: 'Redstonemumbo' },
         { name: 'ONTEY', role: 'Dev', skin: 'derontey' },
         { name: 'ANTONSTIKO', role: 'Dev', skin: 'antonstiko' },
-        { name: '!KIRIGAYA', role: 'Dev', skin: '!KIRIGAYA' },
+        { name: 'KIRIGAYA28', role: 'Dev', skin: 'Kirigaya28' },
         { name: 'DERVAREX', role: 'Mod', skin: 'dervarex' },
         { name: 'OFFIZERWINKLER', role: 'Mod', skin: 'turbomensch' },
         { name: 'JIMBO', role: 'Mod', skin: 'Yellow_Jimbo' },
