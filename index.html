@@ -4,14 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MCCW | Earth SMP Create Server</title>
-    <meta
-      name="description"
-      content="MCCW is a seasonal Earth SMP with Create, automation, builds, nations and community projects."
-    />
-    <meta
-      name="keywords"
-      content="MCCW, Minecraft Server, Earth SMP, Create Mod, modded Minecraft, SMP server, seasonal Minecraft server"
-    />
+    <meta name="description" content="MCCW is a seasonal Earth SMP with Create, automation, builds, nations and community projects." />
+    <meta name="keywords" content="MCCW, Minecraft Server, Earth SMP, Create Mod, modded Minecraft, SMP server, seasonal Minecraft server" />
     <meta name="author" content="meowtroid24" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#111111" />
@@ -21,20 +15,14 @@
     <meta property="og:site_name" content="MCCW" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:title" content="MCCW | Earth SMP Create Server" />
-    <meta
-      property="og:description"
-      content="A seasonal Earth SMP with Create automation, nations, builds and community projects."
-    />
+    <meta property="og:description" content="A seasonal Earth SMP with Create automation, nations, builds and community projects." />
     <meta property="og:image" content="https://mccccw.github.io/assets/minecraft_title_2.png" />
     <meta property="og:image:width" content="2006" />
     <meta property="og:image:height" content="560" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="MCCW | Earth SMP Create Server" />
-    <meta
-      name="twitter:description"
-      content="MCCW is a seasonal Earth SMP for Create, automation and community builds."
-    />
+    <meta name="twitter:description" content="MCCW is a seasonal Earth SMP for Create, automation and community builds." />
     <meta name="twitter:image" content="https://mccccw.github.io/assets/minecraft_title_2.png" />
 
     <link rel="icon" type="image/x-icon" href="favicon_io/favicon.ico" />
@@ -42,12 +30,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png" />
     <link rel="manifest" href="favicon_io/site.webmanifest" />
-    <link
-      rel="stylesheet"
-      media="screen"
-      href="https://fontlibrary.org/face/minecraftia"
-      type="text/css"
-    />
+    <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/minecraftia" type="text/css" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -74,25 +57,20 @@
     </div>
     <div class="panorama-overlay" aria-hidden="true"></div>
 
-    <div id="app" v-cloak>
+    <div id="app">
       <div class="app-shell">
         <nav class="topbar" aria-label="Main navigation">
-          <button class="brand-button" type="button" @click="setView('home')" aria-label="Go to home">
+          <button class="brand-button" type="button" data-view="home" onclick="setViewPhp('home')" aria-label="Go to home">
             <img src="favicon_io/android-chrome-192x192.png" alt="" />
             <span>MCCW</span>
           </button>
 
           <div class="nav-links">
-            <button
-              v-for="item in navItems"
-              :key="item.view"
-              class="nav-link"
-              :class="{ active: activeView === item.view }"
-              type="button"
-              @click="setView(item.view)"
-            >
-              {{ item.label }}
-            </button>
+            <button class="nav-link active" type="button" data-view="home"    onclick="setViewPhp('home')">Home</button>
+            <button class="nav-link"        type="button" data-view="join"    onclick="setViewPhp('join')">Join</button>
+            <button class="nav-link"        type="button" data-view="info"    onclick="setViewPhp('info')">Info</button>
+            <button class="nav-link"        type="button" data-view="staff"   onclick="setViewPhp('staff')">Staff</button>
+            <button class="nav-link"        type="button" data-view="imprint" onclick="setViewPhp('imprint')">Imprint</button>
           </div>
 
           <a class="top-cta" href="https://modrinth.com/modpack/mccw" target="_blank" rel="noopener noreferrer">
@@ -101,14 +79,15 @@
         </nav>
 
         <main>
-          <section class="view home-view" v-show="activeView === 'home'">
+
+          <!-- HOME -->
+          <section class="view home-view" id="view-home">
             <div class="hero-card">
               <div class="card-header">
                 <img class="title-image" src="assets/minecraft_title_2.png" alt="MCCW" />
                 <span class="status-pill">Earth SMP</span>
               </div>
               <div class="accent-line" aria-hidden="true"></div>
-
               <div class="hero-grid">
                 <div class="hero-copy">
                   <p class="eyebrow">Seasonal Minecraft Earth SMP</p>
@@ -117,15 +96,11 @@
                     MCCW combines Create engineering, seasonal progression and community projects
                     on an Earth SMP built for players who like big plans.
                   </p>
-
                   <div class="hero-actions">
-                    <a class="join-button" href="https://modrinth.com/modpack/mccw" target="_blank" rel="noopener noreferrer">
-                      Install
-                    </a>
-                    <button class="ghost-button" type="button" @click="setView('join')">Join Info</button>
+                    <a class="join-button" href="https://modrinth.com/modpack/mccw" target="_blank" rel="noopener noreferrer">Install</a>
+                    <button class="ghost-button" type="button" onclick="setViewPhp('join')">Join Info</button>
                   </div>
                 </div>
-
                 <div class="world-preview" aria-label="MCCW Create preview">
                   <div class="preview-glass">
                     <span>Automation</span>
@@ -134,91 +109,112 @@
                 </div>
               </div>
             </div>
-
             <div class="quick-strip" aria-label="Server highlights">
-              <article v-for="stat in stats" :key="stat.label" class="stat-tile">
-                <strong>{{ stat.value }}</strong>
-                <span>{{ stat.label }}</span>
-              </article>
+              <article class="stat-tile"><strong>Earth</strong><span>SMP Map</span></article>
+              <article class="stat-tile"><strong>Seasons</strong><span>Fresh Progression</span></article>
+              <article class="stat-tile"><strong>Create</strong><span>Automation Focus</span></article>
+              <article class="stat-tile"><strong>Airships</strong><span>Aeronautics</span></article>
             </div>
           </section>
 
-          <section class="view content-view" v-show="activeView === 'join'">
+          <!-- JOIN -->
+          <section class="view content-view" id="view-join" style="display:none">
             <div class="content-shell split-shell">
               <div>
                 <p class="eyebrow">Quick Start</p>
                 <h1>Join MCCW in a few minutes.</h1>
-                <p class="lead">
-                  Download the modpack, join Discord and follow updates on YouTube.
-                </p>
+                <p class="lead">Download the modpack, join Discord and follow updates on YouTube.</p>
               </div>
-
               <div class="link-stack">
-                <a
-                  v-for="link in joinLinks"
-                  :key="link.label"
-                  class="resource-link"
-                  :href="link.href"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span>{{ link.kicker }}</span>
-                  <strong>{{ link.label }}</strong>
+                <a class="resource-link" href="https://modrinth.com/modpack/mccw" target="_blank" rel="noopener noreferrer">
+                  <span>Modpack</span><strong>MCCW on Modrinth</strong>
+                </a>
+                <a class="resource-link" href="https://discord.gg/mZgVfvnQ4h" target="_blank" rel="noopener noreferrer">
+                  <span>Community</span><strong>Join the Discord</strong>
+                </a>
+                <a class="resource-link" href="https://www.youtube.com/channel/UCbZF-E01LV9OQPvK0t6qqIw" target="_blank" rel="noopener noreferrer">
+                  <span>Videos</span><strong>YouTube Channel</strong>
                 </a>
               </div>
             </div>
           </section>
 
-          <section class="view content-view" v-show="activeView === 'info'">
+          <!-- INFO -->
+          <section class="view content-view" id="view-info" style="display:none">
             <div class="content-shell">
               <p class="eyebrow">Server Info</p>
               <h1>Seasonal, technical and community-driven.</h1>
-              <p class="lead">
-                MCCW is made for players who want to build machines, plan infrastructure,
-                claim places on an Earth map and shape each season together.
-              </p>
-
+              <p class="lead">MCCW is made for players who want to build machines, plan infrastructure, claim places on an Earth map and shape each season together.</p>
               <div class="feature-grid">
-                <article v-for="feature in features" :key="feature.title" class="feature-card">
-                  <span>{{ feature.kicker }}</span>
-                  <h2>{{ feature.title }}</h2>
-                  <p>{{ feature.text }}</p>
+                <article class="feature-card">
+                  <span>Earth SMP</span>
+                  <h2>Seasonal World</h2>
+                  <p>Each season gives players a fresh Earth map to explore, settle and shape together.</p>
+                </article>
+                <article class="feature-card">
+                  <span>Create</span>
+                  <h2>Machines &amp; Factories</h2>
+                  <p>Build production lines, automatic farms, storage systems and rail networks.</p>
+                </article>
+                <article class="feature-card">
+                  <span>Aeronautics</span>
+                  <h2>Airships &amp; Space</h2>
+                  <p>Conquer the skies with custom airships and reach for the stars with Create Cosmonautics.</p>
+                </article>
+                <article class="feature-card">
+                  <span>Community</span>
+                  <h2>Shared Projects</h2>
+                  <p>Create towns, routes, hubs and large builds with other players across the map.</p>
                 </article>
               </div>
-
               <div class="rules-list">
-                <article v-for="rule in rules" :key="rule.title" class="rule-row">
-                  <h2>{{ rule.title }}</h2>
-                  <p>{{ rule.text }}</p>
-                </article>
+                <article class="rule-row"><h2>Respect</h2><p>No harassment, hate speech, spam or toxic behavior.</p></article>
+                <article class="rule-row"><h2>Fair Play</h2><p>No griefing, cheating, X-ray, bug abuse, scamming or stealing.</p></article>
+                <article class="rule-row"><h2>Staff</h2><p>Listen to the team and report issues instead of escalating conflicts.</p></article>
               </div>
             </div>
           </section>
 
-          <section class="view content-view" v-show="activeView === 'staff'">
+          <!-- STAFF -->
+          <section class="view content-view" id="view-staff" style="display:none">
             <div class="content-shell">
               <p class="eyebrow">Team</p>
               <h1>Staff, devs and builders.</h1>
-              <p class="lead">
-                The MCCW team keeps the server, community and new projects moving.
-              </p>
-
+              <p class="lead">The MCCW team keeps the server, community and new projects moving.</p>
               <div class="staff-grid">
-                <article v-for="member in staff" :key="member.skin" class="staff-card">
-                  <div>
-                    <h2>{{ member.name }}</h2>
-                    <p>{{ member.role }}</p>
-                  </div>
-                  <canvas class="viewer" width="320" height="260" :data-skin="member.skin"></canvas>
-                </article>
+                <article class="staff-card"><div><h2>MEOWTROID24</h2><p>Owner</p></div><canvas class="viewer" width="320" height="260" data-skin="meowtroid24"></canvas></article>
+                <article class="staff-card"><div><h2>REDSTONEMUMBO</h2><p>Co-Owner</p></div><canvas class="viewer" width="320" height="260" data-skin="Redstonemumbo"></canvas></article>
+                <article class="staff-card"><div><h2>ONTEY</h2><p>Dev</p></div><canvas class="viewer" width="320" height="260" data-skin="derontey"></canvas></article>
+                <article class="staff-card"><div><h2>ANTONSTIKO</h2><p>Dev</p></div><canvas class="viewer" width="320" height="260" data-skin="antonstiko"></canvas></article>
+                <article class="staff-card"><div><h2>KIRIGAYA28</h2><p>Dev</p></div><canvas class="viewer" width="320" height="260" data-skin="Kirigaya28"></canvas></article>
+                <article class="staff-card"><div><h2>DERVAREX</h2><p>Mod</p></div><canvas class="viewer" width="320" height="260" data-skin="dervarex"></canvas></article>
+                <article class="staff-card"><div><h2>OFFIZERWINKLER</h2><p>Mod</p></div><canvas class="viewer" width="320" height="260" data-skin="turbomensch"></canvas></article>
+                <article class="staff-card"><div><h2>JIMBO</h2><p>Mod</p></div><canvas class="viewer" width="320" height="260" data-skin="Yellow_Jimbo"></canvas></article>
+                <article class="staff-card"><div><h2>IBROKP</h2><p>Mod</p></div><canvas class="viewer" width="320" height="260" data-skin="IbrokP"></canvas></article>
+                <article class="staff-card"><div><h2>LIAM</h2><p>Builder</p></div><canvas class="viewer" width="320" height="260" data-skin="liamsadi11"></canvas></article>
               </div>
             </div>
           </section>
+
+          <!-- IMPRINT -->
+          <section class="view content-view" id="view-imprint" style="display:none">
+            <div class="content-shell">
+              <p class="eyebrow">Legal</p>
+              <h1>Imprint</h1>
+              <p class="lead">This page is currently being set up. Check back soon.</p>
+              <div class="rules-list">
+                <article class="rule-row"><h2>Contact</h2><p>Coming soon.</p></article>
+                <article class="rule-row"><h2>Responsible</h2><p>Coming soon.</p></article>
+                <article class="rule-row"><h2>Disclaimer</h2><p>Coming soon.</p></article>
+              </div>
+            </div>
+          </section>
+
         </main>
 
         <footer class="site-footer">
           <span>Made by meowtroid24</span>
-          <button type="button" @click="setView('home')">Back to top</button>
+          <button type="button" onclick="setViewPhp('home')">Back to top</button>
         </footer>
       </div>
     </div>
@@ -226,7 +222,7 @@
     <noscript>
       <main class="noscript-card">
         <h1>MCCW</h1>
-        <p>Please enable JavaScript to use the Vue site.</p>
+        <p>Please enable JavaScript to use this site.</p>
       </main>
     </noscript>
 
@@ -234,6 +230,10 @@
     <script src="script.js"></script>
     <script src="vendor/skinview3d.bundle.js"></script>
     <script src="staff-skin-data.js"></script>
-    <script type="module" src="app.js"></script>
+    <script>
+      var PHP_INITIAL_VIEW = 'home';
+      var PHP_ALLOWED_VIEWS = ['home', 'join', 'info', 'staff', 'imprint'];
+    </script>
+    <script src="app-php.js"></script>
   </body>
 </html>
