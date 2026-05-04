@@ -1,157 +1,132 @@
 // MCCW – app-php.js
-// Replaces the Vue app. Works with the PHP-rendered HTML.
-// Views are shown/hidden via CSS; PHP sets the initial state server-side.
+// Plain-JS view switcher. Works with PHP-rendered HTML.
 
-(function () {
-  'use strict';
+// Safely read PHP-injected globals (index.php sets these before this script)
+var ALLOWED_VIEWS = (typeof PHP_ALLOWED_VIEWS !== 'undefined')
+  ? PHP_ALLOWED_VIEWS
+  : ['home', 'join', 'info', 'staff', 'imprint'];
 
-  const ALLOWED = PHP_ALLOWED_VIEWS || ['home', 'join', 'info', 'staff', 'imprint'];
+var INITIAL_VIEW = (typeof PHP_INITIAL_VIEW !== 'undefined')
+  ? PHP_INITIAL_VIEW
+  : 'home';
 
-  // ─── View switching ──────────────────────────────────────────────────────────
+var staffBooted = false;
 
-  let staffBooted = false;
+// Defined at top level so onclick="setViewPhp(...)" always works.
+function setViewPhp(view) {
+  if (ALLOWED_VIEWS.indexOf(view) === -1) view = 'home';
 
-  function setViewPhp(view) {
-    if (!ALLOWED.includes(view)) view = 'home';
-
-    // Hide all views
-    ALLOWED.forEach(function (v) {
-      const el = document.getElementById('view-' + v);
-      if (el) el.style.display = 'none';
-    });
-
-    // Show target
-    const target = document.getElementById('view-' + view);
-    if (target) target.style.display = '';
-
-    // Update nav active state
-    document.querySelectorAll('.nav-link').forEach(function (btn) {
-      btn.classList.toggle('active', btn.dataset.view === view);
-    });
-
-    // Update URL hash (no page reload)
-    const nextUrl = view === 'home' ? window.location.pathname : '#' + view;
-    history.pushState(null, '', nextUrl);
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    if (view === 'staff') queueStaffBoot();
-  }
-
-  // Expose globally so onclick attributes work
-  window.setViewPhp = setViewPhp;
-
-  // ─── Hash routing ────────────────────────────────────────────────────────────
-
-  window.addEventListener('hashchange', function () {
-    const hash = window.location.hash.replace('#', '') || 'home';
-    setViewPhp(hash);
+  ALLOWED_VIEWS.forEach(function (v) {
+    var el = document.getElementById('view-' + v);
+    if (el) el.style.display = 'none';
   });
 
-  // ─── Skin viewers ────────────────────────────────────────────────────────────
+  var target = document.getElementById('view-' + view);
+  if (target) target.style.display = '';
 
-  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+  document.querySelectorAll('.nav-link').forEach(function (btn) {
+    btn.classList.toggle('active', btn.dataset.view === view);
+  });
 
-  async function loadSkinResilient(viewer, username) {
-    const embedded = window.MCCW_STAFF_SKINS?.[username];
-    if (embedded) {
-      try { await viewer.loadSkin(embedded); return true; } catch (_) {}
-    }
+  var nextUrl = view === 'home' ? window.location.pathname : '#' + view;
+  history.pushState(null, '', nextUrl);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    const sources = [
-      'https://mc-heads.net/skin/' + username,
-      'https://minotar.net/skin/' + username,
-      'https://mineskin.eu/skin/' + username,
-    ];
+  if (view === 'staff') queueStaffBoot();
+}
 
-    for (const source of sources) {
-      for (let attempt = 0; attempt < 2; attempt++) {
-        try { await viewer.loadSkin(source); return true; } catch (_) {
-          await delay(160);
-        }
-      }
-    }
+window.addEventListener('hashchange', function () {
+  var hash = window.location.hash.replace('#', '') || 'home';
+  setViewPhp(hash);
+});
 
-    try { await viewer.loadSkin(window.MCCW_STAFF_FALLBACK_SKIN || 'assets/steve_skin.png'); } catch (_) {}
-    return false;
+// ─── Skin viewers ──────────────────────────────────────────────────────────────
+
+function delay(ms) { return new Promise(function (res) { setTimeout(res, ms); }); }
+
+async function loadSkinResilient(viewer, username) {
+  var embedded = window.MCCW_STAFF_SKINS && window.MCCW_STAFF_SKINS[username];
+  if (embedded) {
+    try { await viewer.loadSkin(embedded); return true; } catch (_) {}
   }
-
-  function getCanvasSize(canvas) {
-    const rect = canvas.getBoundingClientRect();
-    return {
-      width:  Math.max(220, Math.floor(rect.width  || canvas.clientWidth  || canvas.width  || 220)),
-      height: Math.max(250, Math.floor(rect.height || canvas.clientHeight || canvas.height || 250)),
-    };
+  var sources = [
+    'https://mc-heads.net/skin/' + username,
+    'https://minotar.net/skin/' + username,
+    'https://mineskin.eu/skin/' + username,
+  ];
+  for (var i = 0; i < sources.length; i++) {
+    for (var attempt = 0; attempt < 2; attempt++) {
+      try { await viewer.loadSkin(sources[i]); return true; } catch (_) { await delay(160); }
+    }
   }
+  try { await viewer.loadSkin((window.MCCW_STAFF_FALLBACK_SKIN) || 'assets/steve_skin.png'); } catch (_) {}
+  return false;
+}
 
-  function attachMouseRotation(canvas, viewer) {
-    let dragging = false, lastX = 0, spinVelocity = 0, rafId = null;
+function getCanvasSize(canvas) {
+  var rect = canvas.getBoundingClientRect();
+  return {
+    width:  Math.max(220, Math.floor(rect.width  || canvas.clientWidth  || canvas.width  || 220)),
+    height: Math.max(250, Math.floor(rect.height || canvas.clientHeight || canvas.height || 250)),
+  };
+}
 
-    function stopInertia() { if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; } }
-    function startInertia() {
-      stopInertia();
-      const tick = () => {
-        if (dragging || Math.abs(spinVelocity) < 0.00045) { spinVelocity = 0; rafId = null; return; }
-        viewer.playerObject.rotation.y += spinVelocity;
-        spinVelocity *= 0.92;
-        rafId = requestAnimationFrame(tick);
-      };
+function attachMouseRotation(canvas, viewer) {
+  var dragging = false, lastX = 0, spinVelocity = 0, rafId = null;
+  function stopInertia() { if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; } }
+  function startInertia() {
+    stopInertia();
+    function tick() {
+      if (dragging || Math.abs(spinVelocity) < 0.00045) { spinVelocity = 0; rafId = null; return; }
+      viewer.playerObject.rotation.y += spinVelocity;
+      spinVelocity *= 0.92;
       rafId = requestAnimationFrame(tick);
     }
-
-    canvas.addEventListener('pointerdown', (e) => { dragging = true; lastX = e.clientX; spinVelocity = 0; stopInertia(); canvas.setPointerCapture(e.pointerId); });
-    canvas.addEventListener('pointermove', (e) => { if (!dragging) return; const dx = e.clientX - lastX; lastX = e.clientX; spinVelocity = dx * 0.012; viewer.playerObject.rotation.y += spinVelocity; });
-    canvas.addEventListener('pointerup', (e) => { dragging = false; if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId); startInertia(); });
-    canvas.addEventListener('pointercancel', (e) => { dragging = false; spinVelocity = 0; if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId); stopInertia(); });
+    rafId = requestAnimationFrame(tick);
   }
+  canvas.addEventListener('pointerdown', function (e) { dragging = true; lastX = e.clientX; spinVelocity = 0; stopInertia(); canvas.setPointerCapture(e.pointerId); });
+  canvas.addEventListener('pointermove', function (e) { if (!dragging) return; var dx = e.clientX - lastX; lastX = e.clientX; spinVelocity = dx * 0.012; viewer.playerObject.rotation.y += spinVelocity; });
+  canvas.addEventListener('pointerup', function (e) { dragging = false; if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId); startInertia(); });
+  canvas.addEventListener('pointercancel', function (e) { dragging = false; spinVelocity = 0; if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId); stopInertia(); });
+}
 
-  async function initSkinViewers() {
-    if (staffBooted || !window.skinview3d?.SkinViewer) return;
-    const canvases = Array.from(document.querySelectorAll('#view-staff .viewer'));
-    if (!canvases.length) return;
-    staffBooted = true;
-
-    for (const canvas of canvases) {
-      const username = canvas.dataset.skin;
-      const size = getCanvasSize(canvas);
-      canvas.width = size.width;
-      canvas.height = size.height;
-
-      const viewer = new window.skinview3d.SkinViewer({ canvas, width: size.width, height: size.height });
-      await loadSkinResilient(viewer, username);
-
-      viewer.pixelRatio = 1;
-      viewer.zoom = 0.88;
-      viewer.fov = 50;
-      viewer.autoRotate = false;
-      viewer.playerObject.rotation.y = 0.3;
-      viewer.animation = new window.skinview3d.WalkingAnimation();
-      attachMouseRotation(canvas, viewer);
-
-      new ResizeObserver(() => {
-        const s = getCanvasSize(canvas);
-        viewer.width = s.width;
-        viewer.height = s.height;
-      }).observe(canvas);
-
-      await delay(120);
-    }
+async function initSkinViewers() {
+  if (staffBooted || !window.skinview3d || !window.skinview3d.SkinViewer) return;
+  var canvases = Array.from(document.querySelectorAll('#view-staff .viewer'));
+  if (!canvases.length) return;
+  staffBooted = true;
+  for (var c = 0; c < canvases.length; c++) {
+    var canvas = canvases[c];
+    var username = canvas.dataset.skin;
+    var size = getCanvasSize(canvas);
+    canvas.width = size.width;
+    canvas.height = size.height;
+    var viewer = new window.skinview3d.SkinViewer({ canvas: canvas, width: size.width, height: size.height });
+    await loadSkinResilient(viewer, username);
+    viewer.pixelRatio = 1;
+    viewer.zoom = 0.88;
+    viewer.fov = 50;
+    viewer.autoRotate = false;
+    viewer.playerObject.rotation.y = 0.3;
+    viewer.animation = new window.skinview3d.WalkingAnimation();
+    attachMouseRotation(canvas, viewer);
+    (function (cv, vw) {
+      new ResizeObserver(function () {
+        var s = getCanvasSize(cv); vw.width = s.width; vw.height = s.height;
+      }).observe(cv);
+    })(canvas, viewer);
+    await delay(120);
   }
+}
 
-  function queueStaffBoot() {
-    requestAnimationFrame(() => setTimeout(initSkinViewers, 0));
-  }
+function queueStaffBoot() {
+  requestAnimationFrame(function () { setTimeout(initSkinViewers, 0); });
+}
 
-  // ─── Init ────────────────────────────────────────────────────────────────────
+// ─── Init ──────────────────────────────────────────────────────────────────────
 
-  document.addEventListener('DOMContentLoaded', function () {
-    // PHP already rendered the correct initial view.
-    // If JS is enabled and there's a hash, let hash routing take over.
-    const hash = window.location.hash.replace('#', '');
-    if (hash && ALLOWED.includes(hash) && hash !== PHP_INITIAL_VIEW) {
-      setViewPhp(hash);
-    }
-
-    if (PHP_INITIAL_VIEW === 'staff') queueStaffBoot();
-  });
-})();
+document.addEventListener('DOMContentLoaded', function () {
+  var hash = window.location.hash.replace('#', '');
+  var startView = (hash && ALLOWED_VIEWS.indexOf(hash) !== -1) ? hash : INITIAL_VIEW;
+  setViewPhp(startView);
+});
